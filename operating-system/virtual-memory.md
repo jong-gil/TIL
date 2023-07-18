@@ -47,7 +47,7 @@
   - 프로세스 크기가 페이지 크기의 배수 단위가 아닐 때
   > - i.e. 페이지 크기 10KB, 프로세스 크기 108KB
   > - 11번째 페이지는 8KB만 적재 (2KB 내부 단편화)
-  ![Alt text](internal-fragmentation.png)
+  ![Alt text](asset/internal-fragmentation.png)
 
 #### PTBR (Process Table Base Register)
 - 프로세스마다 페이지 테이블이 있고
@@ -91,10 +91,10 @@
 >   - 부모 프로세스가 적재된 별도의 공간에 자식 프로세스가 통째로 복사되어 적재
 - fork가 되면 자식 프로세스는 부모 프로세스와 동일한 프레임을 가리킴
 - 부모/자식 프로세스 중 하나가 페이지에 쓰기 작업 수행 시 해당 페이지는 별도의 공간으로 복제
- ![Alt text](copy-on-write.png)
+ ![Alt text](asset/copy-on-write.png)
 
  ### 계층적 페이징
- ![Alt text](multilevel-paging.png)
+ ![Alt text](asset/multilevel-paging.png)
  - 페이지 테이블을 페이징하여 여러 단계의 페이지를 두는 방식
  - 모든 페이지 테이블이 항상 메모리에 있을 필요는 없음
  - CPU와 가장 가까이 위치한 페이지 테이블`(Outer 페이지 테이블)`은 항상 메모리에 유지
