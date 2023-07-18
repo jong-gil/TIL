@@ -1,0 +1,41 @@
+## Source Code and Command
+### 고급언어와 저급언어
+- 저급언어
+    - 기계어: 0과 1로 이루어진 명령어
+    - 어셈블리어: 기계어를 읽기 편한 형태로 번역한 언어
+- 고급언어
+    - 컴파일 언어
+    - 인터프리트 언어
+        - 인터프리터로 인해 한줄 씩 실행
+        - 소스코드 전체가 저급 언어로 변환되기까지 기다릴 필요가 없음
+    - 모든 프로그래밍 언어가 컴파일 / 인터프리트 언어로 양분되지 않음!
+
+### 명령어의 구조
+- 연산코드
+    - 수행할 연산
+    - 데이터 전송
+        - move
+        - store
+        - load (fetch): 메모리에서 CPU로 데이터 가져오기
+        - push: stack에 데이터 저장
+        - pop
+    - 산술/논리 연산
+        - add, subtract, muliply, divide
+        - increment, decrement: operand에 1을 더하기 / 빼기
+        - and, or, not
+        - compare: 두 개의 숫자 or TRUE/FALSE 값 비교
+    - 제어 흐름 변경
+        - jump: 특정 메모리 주소로 실행 순서 옮기기
+        - conditional jump
+        - halt
+        - call: 함수를 실행할 때 쓰임 (되돌아올 주소를 저장한 채 특정 주소로 실행 순서 옮기기)
+        - return: call을 호출할 때 저장했던 주소로 돌아가기
+    - 입출력 제어
+        - read
+        - write
+        - start IO
+        - test IO
+- operand
+    - 연산에 사용될 데이터
+    - **데이터가 저장된 위치** -> 주소필드
+    - 명령어가 담을 수 있는 데이터의 크기가 제한됨 
