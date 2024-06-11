@@ -55,5 +55,9 @@ Temporary Items
 
 # End of https://www.toptal.com/developers/gitignore/api/macos,visualstudiocode
 
+<<<<<<< HEAD
 # Obsidian File
+=======
+### Obsidian ###
+>>>>>>> 07e8c1b (gitignore update)
 .obsidian/*
