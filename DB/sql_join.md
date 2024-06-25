@@ -46,7 +46,7 @@ FROM instructor
 한쪽 테이블의 모든 행과 다른 쪽 테이블의 모든 행을 join하는 기능<br/>
 Cartesian Product
 
-![Alt text](asset/crossJoin_img.png)
+![Alt text](crossJoin_img.png)
 
 ```
 SELECT * 
