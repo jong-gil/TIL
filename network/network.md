@@ -2,11 +2,11 @@
 Open Systems Interconnection Reference Model<br/>
 각 계층은 하위 계층의 기능만을 이용하고 상위 계층에게 기능을 제공<br/>
 
->> 물리적 연결: 케이블을 통해 직접적으로 연결되는 통신  
-논리적 연결: IP 또는 MAC address를 통한 통신  
+> 물리적 연결: 케이블을 통해 직접적으로 연결되는 통신  
+   논리적 연결: IP 또는 MAC address를 통한 통신  
 
->> 물리적 주소: MAC address -> 변경 불가능 (고유값)  
-논리적 주소: IP, IPX, Apple talk -> 변경 가능
+> 물리적 주소: MAC address -> 변경 불가능 (고유값)  
+   논리적 주소: IP, IPX, Apple talk -> 변경 가능
 
 PDNTSPA
 
