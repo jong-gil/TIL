@@ -32,4 +32,4 @@ JVM에서 메모리 관리: 힙과 스택의 메모리 사용 확인
 > #### 실행순서<br/> 
 > 참조되지 않은 객체 탐색 후 삭제 -> 삭제된 객체의 메모리 반환 -> 힙 메모리 재사용
 
-[Garbage Collection 정리](./garbage-collection.md)
+[Garbage Collection 정리](./GarbageCollection.md)
