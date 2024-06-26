@@ -12,7 +12,7 @@
 
 ### 개념
 - connection pooling을 사용하면 물리적인 데이터베이스 연결들이 여러 개의 논리적 연결 인스턴스에 의해 재사용 될 수 있음
-![[dbcp.png]]
+![[asset/dbcp.png]]
 
 ### Hikari CP
 - JDBC 기반 Connection Pool
