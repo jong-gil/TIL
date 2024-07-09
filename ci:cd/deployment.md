@@ -26,11 +26,10 @@ cd build/libs
 java -jar <SNAPSHOT.jar>
 ```
 > `gradlew 권한 오류` 발생시 
-> ```
-> sudo chmod 777 ./gradlew   
-> ```
 
-
+```
+sudo chmod 777 ./gradlew   
+```
 
 
 ---
