@@ -128,21 +128,66 @@ void spy_example() throws Exception {
 	verity(mailingService).getSendMailCount();
 }
 ```
-- 
 
 #### Mock
+- 반환하는 값의 사양과 기댓값을 미리 프로그래밍 하는 객체
+- Mockito 프레임워크 사용 가능
+```java
+@ExtendWith(MockitoExtension.class) 
+public class UserServiceTest {
+	@Mock
+	private UserRepository userRepository;
+	@Test
+	void test() {
+		//given
+		when(userRepository.findById(anyLong())).thenReturn(new User(1, "Test User));
+		
+		//when
+		User actual = userService.findById(1);
+		
+		// given
+		assertThat(actual.getId()).isEqualTo(1);
+		assertThat(acutal.getName()).isEqualTo("Test User);
+```
+---
 
+> 더블을 사용하여 실제 의존 클래스로부터 격리된 테스트는 **Solitary Unit Test**
+> 더블을 사용하지 않는 테스트는 **Sociable Unit Test**
+> Solitary를 지향하는 사람들은 Mockist, Sociable한 테스트도 괜찮다고 생각하면 Classicist
 
+## 상태검증과 행위검증
+- 상태검증
+```java
+// given
+Order order = new Order(식빵, 딸기잼, 우유);
+WareHouse wareHouse = new WareHouse(식빵, 딸기잼, 우유, 사과);
 
+// when
+order.check(wareHouse);
 
-## Unit Test
+// then
+assertThat(order.isPossible).isTrue();
+assertThat(wareHouse.size()).isEqualTo(1);
 
-## Integration Test
+```
+	- classicist가 주로 사용하는 검증방법
+	- 메스드 혹은 상황이 수행된 다음 객체 내부의 상태 확인
+- 행위검증
+```java
+//given
+Order order = new Order(식빵, 딸기잼, 우유);
+WareHouse mockWareHouse = mock(WareHouse.class);
+given(mockWareHouse.hasInventory(식빵, 딸기잼, 우유)).willReturn(true);
 
-## Classicist
+// when
+order.check(mockWareHouse);
 
-## Mockist
+// then
+verify(mockWareHouse).hasInventory(식빵, 딸기잼, 우유);
+verify(mockWareHouse).remove(식빵, 딸기잼, 우유);
+```
 
+---
 참고
 - [what is tdd - Spcieworks](https://www.spiceworks.com/tech/devops/articles/what-is-tdd/)
 - [알고풀자 Blog](https://algopoolja.tistory.com/119)
