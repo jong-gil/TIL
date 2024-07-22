@@ -54,26 +54,136 @@
     - 한 프로세스가 임계구역에 진입하고 싶다면 언젠가는 임게 구역에 들어올 수 있어야 한다 (무한 대기해서는 안된다)
   
 ### 동기화 기법
-- 뮤택스 락
-  - 자물쇠 역할: 프로세스들이 공유하는 전역 변수 lock
-  - 임계 구역 잠그는 역할: acquire 함수 -> busy waiting (잠김 여부를 반복적으로 확인)
-  - 임계 구역 잠금 해제 역할: release 함수
-  ```C++
-  acquire(){
-    while(lock == true) // busy waiting
-        ;
-    lock = true;
-  }
+#### 스핀 락
+```cpp
+volatile int lock = 0; //global
 
-  release(){
-    lock = false;
-  }
+void critical() {
+	while(test_and_set(&lock) == 1);
+	critical section
+	lock = 0;
+}
 
-  acquire(); // 자물쇠 잠금 여부 확인 && 잠겨있지 않다면 잠근다
-  // 임계 구역
-  release(); // 자물쇠 반환
-  ```
-- 세마포
+// 공유되는 lock에 대해서 원래 가지고 있는 값을 반환
+// 반환 하기 전 lock의 값을 무조건 1로 바꿈
+int test_and_set(int* lockPtr) {
+	int oldLock = *lockPtr;
+	*lockPtr = 1;
+	return oldLock;
+}
+```
+- test_and_set은 **atomic**한 CPU 명령어
+	- 실행 중간에 간섭받거나 중단되지 않음
+	- 같은 메모리 영역에 대해 동시에 실행되지 않음
+#### 뮤택스 락
+  - 락을 가질 수 있을 때까지 휴식
+  ```cpp
+class Mutex {
+	int value = 1; 
+	int guard = 0; 
+} 
+
+Mutex::lock() {
+	// gurad를 취득하기 위한 작업
+	// guard가 0이면 1로 바꾸고, 1이면 계속 1을 리턴
+	while(test_and_set(&guard));
+	
+	if(value == 0) { 
+		현재 스레드를 큐에 넣는다;
+		guard = 0; & go to sleep 
+		} else { 
+			value = 0: 
+			guard = 0; 
+		} 
+}
+
+Mutex::unlock() {
+	while(test_and_set(&guard));
+	if(큐 중에 하나 이상 대기 중){
+		그 중 하나 깨운다;
+	} else {
+		value = 1;
+	}
+	guard = 0;
+}
+```
+	- value: mutex가 잠겼는지 확인 (뮤택스의 핵심 상태를 나타내는 변수)
+	- guard: lock의 critical section을 보호 (value가 atmoic할 수 있게 도와주는 임시 락) 
+
+- 참고
+	- `while(test_and_set(&guard))`의 Java 식 표현
+	- `while(!guard.compareAndSet(false, true))`
+```java
+compareAndSet(expectedValue, newValue)
+
+guard.compareAndSet(false, true)
+```
+	- AtmoicBoolean의 메서드 - interrupt되지 않는 하나의 연산
+	- guard = true -> false 반환
+	- guard = false -> true 반환 && guard를 true로 바꿈
+
+
+> 스핀락 vs 뮤택스 락
+> - 멀티코어 환경이고
+> - critical section 작업이 context switching 보다 빨리 끝난다면 
+> - 스핀락이 뮤택스보다 더 이점이 있음
+
+#### 세마포
+> signal mechanism을 가진 하나 이상의 process / thread가 critical section에 접근 가능하도록 하는 장치
+```cpp
+class Semaphore {
+	int value = 1;
+	int guard = 0;
+}
+
+Semaphore::wait() {
+	while (test_and_set(&guard));
+	if(value == 0) {
+		현재 스레드를 큐에 넣음
+		guard = 0; & go to sleep
+	} else {
+		value -= 1;
+		guard = 0;
+	}
+}
+
+Semaphore::signal() {
+	while(test_and_set(&guard)); 
+	if(큐에 하나 이상 대기중) {
+		그 중 하나를 깨워서 준비시킴
+	} else {
+		value += 1;
+	}
+	guard = 0;
+}
+```
+- 순서를 정할 때 사용
+```cpp
+class Semaphore {
+	int value = 0;
+	int guard = 0;
+} 
+```
+| Process1 | Process 2|
+| --- | ---|
+|task1| task2|
+|semaphore -> signal() | semaphore -> wait()|
+| | task3|
+
+- task 3는 task1 이 끝난 뒤에 실행됨
+- wait() 와 signal()이 같은 프로세스에서 실행될 필요는 없음
+
+#### 뮤택스와 바이너리 세마포
+- 뮤택스는 락을 가진 자만 락을 해제할 수 있음
+- 세마포는 signal()의 주체와 wait()의 주체가 다를 수 있음
+- 뮤택스는 priority inheritance 속성을 가짐
+	- CPU scheduling에서 하나의 프로세스가 다른 프로세스를 의존할 때
+	- 우선순위가 높은 프로세스가 낮은 프로세스를 의존하고 있다면
+	- 우선순위가 낮은 프로세스의 순위를 높이는 방식 -> priority inheritance
+- 상호 배제만 필요하다면 뮤택스
+- 작업 간 실행 순서 동기화가 필요하다면 세마포가 권장됨
+
+#### 세마포 - 과거 공부 내용
   - 이진 세마포, **카운팅 세마포**
   - 공유 자원이 여러 개 있는 경우에도 가능
   - 임계 구역 앞에서 멈춤 신호를 받으면 잠시 기다리기
@@ -83,7 +193,7 @@
   >> 임계 구역에 진입할 수 있는 프로세스 개수를 나타내는 전역변수 S<br/>
   >> 임계 구역에 들어가도 좋은지 기다리는 wait 함수<br/>
   >> 임계 구역 앞에서 기다리는 프로세스에 가도 좋다는 신호 주는 signal 함수
-  ```C++
+  ```cpp
   wait(){
     while (S <= 0);
     S--;
